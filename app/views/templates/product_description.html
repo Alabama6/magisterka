@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div id="display">
+	<div id="productName">
+		<h1>{{ product.name }}</h1>
+	</div>
+	<div>
+        <img src={{url_for('static', filename='shoes/' + product.image_file) }} id="itemImage" />
+	</div>
+
+	<div id="productDescription">
+		<h2>Details</h2>
+		<table id="descriptionTable" style="width:30%">
+			<tr>
+				<td>Name</td>
+				<td>{{ product.name }}</td>
+			</tr>
+			<tr>
+				<td>Price</td>
+				<td>${{ product.price }}</td>
+			</tr>
+			<tr>
+				<td>Size</td>
+				<td>{{ product.size }}</td>
+			</tr>
+			<tr>
+				<td>Category</td>
+				<td>{{ product.category }}</td>
+			</tr>
+		</table>
+		<h2>Description</h2>
+		<p>{{ product.description }}</p>
+	</div>
+	<div id="addToCart">
+		<a href="/add_to_cart?product_id={{product.product_id}}">Add to Cart</a>
+	</div>
+</div>
+{% endblock content %}

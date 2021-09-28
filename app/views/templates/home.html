@@ -1,0 +1,15 @@
+
+{% extends "layout.html" %}
+{% block content %}
+
+    <div class="display">
+        <div class="displayCategory">
+            <h2>Shop by Category: </h2>
+            <ul>
+                {% for category in categories %}
+                <li><a href="/category?category_name={{ category }}">{{ category }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock content %}

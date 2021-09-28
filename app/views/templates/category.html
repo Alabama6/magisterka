@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div>
+        <h2>Showing all products of Category:  {{ category_name }}</h2>
+		<div class="container">
+
+  <p>Search the size:</p>
+  <input class="form-control" id="myInput" type="text" placeholder="Search..">
+  <br>
+
+</div>
+
+	<table style="width:90%">
+		<tr id="productName">
+			{% for product in products %}
+			<td>
+                <div class="article-metadata">
+				{{ product.name }}
+                </div>
+			</td>
+			{% endfor %}
+		</tr>
+         <tr id="productImage">
+			{% for product in products %}
+			<td>
+				<a href="/product_description?product_id={{ product.product_id }}">
+                <img src={{url_for('static', filename='shoes/' + product.image_file)}} id="itemImage" />
+			</td>
+			{% endfor %}
+		</tr>
+        <tr id="productPrice">
+			{% for product in products %}
+			<td>
+				${{ product.price }}
+			</td>
+			{% endfor %}
+		</tr>
+
+	</table>
+
+</div>
+
+{% endblock content %}

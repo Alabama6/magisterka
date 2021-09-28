@@ -28,3 +28,25 @@ class Post(db.Model):
 
     def __repr__(self):
         return f"Post('{self.title}', '{self.date_posted}')"
+
+class Products(db.Model):
+    product_id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Text, nullable=False)
+    price = db.Column(db.Integer, nullable=False)
+    size = db.Column(db.Text, nullable=False)
+    category = db.Column(db.Text)
+    description = db.Column(db.Text)
+    image_file = db.Column(db.String(100))
+
+
+class Categories(db.Model):
+    category_id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+
+
+class Cart(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    product_id = db.Column(db.Integer, db.ForeignKey('products.product_id'))
+    user = db.relationship("User", backref=db.backref("user", uselist=False))
+    products = db.relationship("Products", backref=db.backref("products", uselist=False))

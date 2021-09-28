@@ -1,36 +1,11 @@
 import secrets
 import os
 from PIL import Image
-from flask import render_template, url_for, flash, redirect, request
 from app import app, db, bcrypt
-from app.forms import RegistrationForm, LoginForm, UpdateAccountForm
-from app.models import User, Post
+from flask import render_template, url_for, flash, redirect, request
 from flask_login import login_user, current_user, logout_user, login_required
-
-db.create_all()
-
-
-posts = [
-    {
-        'author': 'Amanda Stan',
-        'title': 'Orange new Black',
-    },
-    {
-        'author': 'Jane Carey',
-        'title': 'Summer in the City',
-    }
-]
-
-
-@app.route("/")
-@app.route("/home")
-def home():
-    return render_template("home.html", posts=posts)
-
-
-@app.route("/about")
-def about():
-    return render_template("about.html", title="About")
+from app.forms import RegistrationForm, LoginForm, UpdateAccountForm
+from app.models import User
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -44,6 +19,7 @@ def register():
         db.session.add(user)
         db.session.commit()
         flash("Your account has been created! You are now able to log in!", "success")
+        print(f" redirect {redirect(url_for('login'))}")
         return redirect(url_for("login"))
     return render_template("register.html", title="Register", form=form)
 
@@ -74,7 +50,7 @@ def save_picture(form_picture):
     random_hex = secrets.token_hex(8)
     f_name, f_ext = os.path.splitext(form_picture.filename)
     picture_name = random_hex + f_ext
-    picture_path = os.path.join(app.root_path, "static/profile_pics", picture_name)
+    picture_path = os.path.join(app.root_path, "views/static/profile_pics", picture_name)
 
     output_size = (125, 125)
     image = Image.open(form_picture)

@@ -34,12 +34,15 @@
                 <div class="navbar-nav mr-auto">
                     <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
                     <a class="nav-item nav-link" href="{{ url_for('about') }}">About Us</a>
-                    <a class="nav-item nav-link" href="/about">Products</a>
-                    <a class="nav-item nav-link" href="/about">Contact</a>
-                    <a class="nav-item nav-link" href="/about">Career</a>
+                    <a class="nav-item nav-link" href="{{ url_for('contact') }}">Contact</a>
+                    <a class="nav-item nav-link" href="{{ url_for('career') }}">Career</a>
                 </div>
                 <!-- Navbar Right Side -->
                 <div class="navbar-nav">
+                    <a class="nav-item nav-link" href="{{ url_for('cart') }}">
+                        <img src={{url_for('static', filename='images/shoppingCart.png')}} id="cartIcon" />
+                        CART {{ carts_count }}
+                    </a>
                     {% if current_user.is_authenticated %}
                         <a class="nav-item nav-link" href="{{ url_for('account') }}">Account</a>
                         <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>

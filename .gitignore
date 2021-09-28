@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 
 app/site.db
-app/static/*
+app/views/static/*
