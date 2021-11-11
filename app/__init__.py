@@ -4,10 +4,14 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from app.config import Config
 
-app = Flask(__name__, template_folder="views/templates", static_folder="views/static")
+app = Flask(
+    __name__,
+    template_folder="views/templates",
+    static_folder="views/static"
+)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
-bcrypt= Bcrypt(app)
+bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
 login_manager.login_message_category = "info"

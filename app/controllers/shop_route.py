@@ -6,7 +6,6 @@ from flask import render_template, url_for, flash, redirect, request
 from flask_login import current_user, login_required
 from app.models import Products, Cart
 from app.forms import UpdateItemForm
-from sqlalchemy import select
 
 
 def cart_count():
@@ -29,22 +28,53 @@ def cart():
         results.append(products)
 
     total_price = _calculate_total_price(results)
-    return render_template("cart.html", products=results, total_price=total_price, carts_count=cart_count(),
-                           title="Carts")
+    return render_template(
+        "cart.html",
+        products=results,
+        total_price=total_price,
+        carts_count=cart_count(),
+        title="Carts"
+    )
 
 
 @app.route("/catalog", methods=['GET', 'POST'])
 def catalog():
     categories = ["Men", "Woman", "Kids"]
-    return render_template("catalog.html", categories=categories, carts_count=cart_count(), title="Product Catalog")
+    return render_template(
+        "catalog.html",
+        categories=categories,
+        carts_count=cart_count(),
+        title="Product Catalog"
+    )
 
 
 @app.route("/category")
 def category():
     category_name = request.url.split('=')[1]
     products = Products.query.filter_by(category=category_name).all()
-    return render_template('category.html', products=products, category_name=category_name, carts_count=cart_count(),
-                           title="Display Category")
+    return render_template(
+        'category.html',
+        products=products,
+        category_name=category_name,
+        carts_count=cart_count(),
+        title="Display Category"
+    )
+
+
+@app.route("/filtered_sizes", methods=['GET', 'POST'])
+def filtered_sizes():
+
+    size = request.args.get('size')
+    category = request.args.get('category')
+    products = Products.query.filter_by(category=category, size=size).all()
+    return render_template(
+        "size.html",
+        products=products,
+        category=category,
+        size=size,
+        carts_count=cart_count(),
+        title="Filtered Category"
+    )
 
 
 @app.route("/checkout")
@@ -58,9 +88,12 @@ def checkout():
 
 def save_picture(form_picture):
     random_hex = secrets.token_hex(8)
+    print("FORM PICTURE {}".format(form_picture.filename))
     f_name, f_ext = os.path.splitext(form_picture.filename)
     picture_name = random_hex + f_ext
-    picture_path = os.path.join(app.root_path, "views/static/shoes", picture_name)
+    picture_path = os.path.join(
+        app.root_path, "views/static/shoes", picture_name
+    )
 
     output_size = (125, 125)
     image = Image.open(form_picture)
@@ -75,9 +108,8 @@ def save_picture(form_picture):
 def new_item():
     form = UpdateItemForm()
     if form.validate_on_submit():
+        print("form picture data {}".format(form.picture.data))
         picture_file = save_picture(form.picture.data)
-        print(f"size!!!  {form.size.data}")
-
         product = Products(
             name=form.name.data,
             price=form.price.data,
@@ -90,7 +122,12 @@ def new_item():
         db.session.commit()
         flash("New item is added", "success")
         return redirect(url_for("home"))
-    return render_template('create_item.html', form=form, carts_count=cart_count(), title="New Item")
+    return render_template(
+        'create_item.html',
+        form=form,
+        carts_count=cart_count(),
+        title="New Item"
+    )
 
 
 @app.route("/products", methods=['GET'])
@@ -105,6 +142,7 @@ def _map_response(data):
         products[product.product_id] = {
             "name": product.name,
             "price": product.price,
+            "size": product.size,
             "description": product.description,
             "category": product.category,
             "image": product.image_file
@@ -116,8 +154,12 @@ def _map_response(data):
 def product_description():
     product_id = request.url.split("=")[1]
     product = Products.query.filter_by(product_id=product_id).first()
-    return render_template("product_description.html", product=product, carts_count=cart_count(),
-                           title="Product Description")
+    return render_template(
+        "product_description.html",
+        product=product,
+        carts_count=cart_count(),
+        title="Product Description"
+    )
 
 
 @app.route("/add_to_cart")
@@ -140,10 +182,9 @@ def add_to_cart():
 def remove_from_cart():
     product_id = request.url.split("=")[1]
     user_id = current_user.id
-    print(f"product id {product_id}")
-    print(f"user id {user_id}")
-    product = Cart.query.filter_by(product_id=product_id, user_id=user_id).first()
-    print(f"product {product}")
+    product = Cart.query.filter_by(
+        product_id=product_id, user_id=user_id
+    ).first()
     db.session.delete(product)
     db.session.commit()
     flash("Your cart has been updated", "success")
